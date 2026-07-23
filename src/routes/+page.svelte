@@ -3,9 +3,13 @@
 		{
 			index: '02',
 			name: 'ADead-BIB v8.0',
-			type: 'Infraestructura de compilador C / C++',
+			type: 'Compilador C / C++',
+			purpose:
+				'Entender y controlar todo el recorrido que convierte código humano en un programa ejecutable.',
 			description:
-				'Compilador construido desde sus fundamentos: análisis, IR propio y emisión binaria PE/ELF sin delegar el núcleo a LLVM o GCC.',
+				'Construido desde sus fundamentos, sin delegar el núcleo a herramientas externas. Convierte una especificación compleja en etapas pequeñas, verificables y medibles.',
+			value:
+				'Demuestra arquitectura a gran escala, constancia y dominio del ciclo completo de compilación.',
 			metric: '354K+',
 			metricLabel: 'líneas propias',
 			tags: ['C', 'C++', 'x86-64', 'Custom IR']
@@ -13,9 +17,13 @@
 		{
 			index: '03',
 			name: 'FastOS v4.0',
-			type: 'Sistema operativo modular',
+			type: 'Sistema operativo compacto',
+			purpose:
+				'Explorar cuánto puede simplificarse un sistema operativo sin perder aislamiento ni control.',
 			description:
-				'Kernel compacto en C99 con bootloader MBR, paging, scheduling preventivo y separación de privilegios Ring 0 / Ring 3.',
+				'Un sistema modular que arranca desde un bootloader de 512 bytes y mantiene su núcleo en 64 KB. Cada componente tiene una responsabilidad clara.',
+			value:
+				'Demuestra criterio para trabajar con recursos limitados y tomar decisiones de diseño conscientes.',
 			metric: '64 KB',
 			metricLabel: 'kernel',
 			tags: ['C99', 'Kernel', 'MBR', 'Bare metal']
@@ -23,9 +31,13 @@
 		{
 			index: '04',
 			name: 'PyDead-BIB v4.0',
-			type: 'Python JIT experimental',
+			type: 'Acelerador experimental para Python',
+			purpose:
+				'Investigar cómo reducir el tiempo entre escribir código Python y ejecutarlo directamente en el procesador.',
 			description:
-				'Prototipo de traducción de Python a código máquina x86-64 nativo, orientado a reducir capas y estudiar ejecución sin GIL.',
+				'Prototipo que traduce Python a instrucciones nativas. El objetivo no es reemplazar Python, sino estudiar dónde están sus costos y qué capas pueden eliminarse.',
+			value:
+				'Demuestra experimentación orientada por métricas y capacidad para cruzar lenguajes con hardware.',
 			metric: '0.305 ms',
 			metricLabel: 'arranque medido',
 			tags: ['Python', 'JIT', 'Assembly', 'R&D']
@@ -33,31 +45,65 @@
 		{
 			index: '05',
 			name: 'REACTOR',
-			type: 'Framework de cómputo Vulkan',
+			type: 'Framework para aprovechar la GPU',
+			purpose:
+				'Hacer accesible la potencia de la GPU sin repetir cientos de líneas de configuración compleja.',
 			description:
-				'Capa de ingeniería para simplificar la configuración de Vulkan y concentrar el trabajo en render y cómputo GPU.',
-			metric: '24.1',
-			metricLabel: 'TFLOPS pico / RTX 3060',
+				'Organiza la complejidad de Vulkan para que el trabajo se concentre en render, simulación y cómputo, no en configuración repetitiva. La investigación asociada llegó a renderizar un millón de entidades a 75 FPS en una RTX 3060.',
+			value:
+				'Demuestra capacidad para convertir APIs difíciles en herramientas más claras y productivas.',
+			metric: '98%',
+			metricLabel: 'menos código repetitivo',
 			tags: ['Vulkan', 'GPU', 'Compute', 'C++']
 		}
 	];
 
 	const skills = [
 		{
-			label: 'Lenguajes',
-			value: 'Rust · C · C++ · x86-64 Assembly · Python'
+			label: 'Construcción de sistemas',
+			value: 'Rust · C · C++ · x86-64 Assembly · Python',
+			meaning:
+				'Puedo trabajar desde la idea y el diseño hasta instrucciones que ejecuta el procesador.'
 		},
 		{
-			label: 'Sistemas',
-			value: 'Kernels · UEFI / MBR · Paging · Schedulers · Ring 0/3'
+			label: 'Arquitectura y aislamiento',
+			value: 'Kernels · UEFI / MBR · Memoria · Schedulers · Ring 0/3',
+			meaning:
+				'Diseño límites claros para que los componentes fallen de forma controlada y el sistema siga siendo entendible.'
 		},
 		{
-			label: 'Compiladores',
-			value: 'Lexing · Parsing · AST · SSA IR · PE / ELF · JIT'
+			label: 'Lenguajes y compiladores',
+			value: 'Parsing · AST · IR · PE / ELF · AOT · JIT',
+			meaning: 'Convierto reglas de un lenguaje en software ejecutable, verificable y optimizable.'
 		},
 		{
-			label: 'GPU & rendimiento',
-			value: 'Vulkan · DX12 · CUDA · wgpu · AVX2 · SSE4.2 · BMI2'
+			label: 'Rendimiento medible',
+			value: 'Vulkan · DX12 · CUDA · wgpu · SIMD · Profiling',
+			meaning:
+				'No optimizo por intuición: mido, encuentro el costo real y actúo sobre la evidencia.'
+		}
+	];
+
+	const strengths = [
+		{
+			number: '01',
+			title: 'Veo el sistema completo',
+			text: 'Conecto producto, arquitectura, software y hardware para evitar soluciones locales que crean problemas nuevos.'
+		},
+		{
+			number: '02',
+			title: 'Asumo responsabilidad real',
+			text: 'Puedo llevar una idea ambigua hasta una implementación que arranca, se mide y se documenta.'
+		},
+		{
+			number: '03',
+			title: 'Depuro con evidencia',
+			text: 'Trabajo por hipótesis, telemetría y pruebas. En BMO-X resolví fallos de hardware usando solo diagnósticos en pantalla.'
+		},
+		{
+			number: '04',
+			title: 'Simplifico sin ocultar',
+			text: 'Busco interfaces pequeñas y explicables, manteniendo visibles los costos y las decisiones importantes.'
 		}
 	];
 
@@ -96,9 +142,9 @@
 		</a>
 
 		<nav class:open={menuOpen} aria-label="Navegación principal">
+			<a href="#valor" onclick={() => (menuOpen = false)}>Lo que aporto</a>
 			<a href="#bmo" onclick={() => (menuOpen = false)}>BMO-X</a>
 			<a href="#proyectos" onclick={() => (menuOpen = false)}>Proyectos</a>
-			<a href="#perfil" onclick={() => (menuOpen = false)}>Perfil</a>
 			<a href="#contacto" onclick={() => (menuOpen = false)}>Contacto</a>
 		</nav>
 
@@ -123,13 +169,19 @@
 			<div class="hero-copy">
 				<p class="eyebrow"><span></span> Lima, Perú · R&D independiente</p>
 				<h1>
-					Construyo sistemas<br />
-					desde el <em>primer byte.</em>
+					Convierto complejidad<br />
+					en sistemas <em>claros.</em>
 				</h1>
 				<p class="hero-lead">
-					Ingeniero de software de sistemas y arquitecto. Diseño compiladores, kernels y motores de
-					cómputo donde el control, la precisión y el rendimiento son parte de la arquitectura.
+					Soy Eddi Salazar, ingeniero de software de sistemas. Construyo tecnología desde sus
+					fundamentos para crear soluciones rápidas, controlables y capaces de crecer sin
+					convertirse en una caja negra.
 				</p>
+				<div class="hero-proof" aria-label="Resumen profesional">
+					<span><i>01</i> Arquitectura de sistemas</span>
+					<span><i>02</i> Compiladores y lenguajes</span>
+					<span><i>03</i> Rendimiento y hardware</span>
+				</div>
 				<div class="hero-actions">
 					<a class="button primary" href="#bmo">Explorar BMO-X <span>↘</span></a>
 					<a class="button ghost" href="#proyectos">Ver trabajo seleccionado</a>
@@ -152,25 +204,73 @@
 		<section class="statement section-pad" id="perfil">
 			<div class="section-kicker"><span>序</span> PERFIL / 2019—PRESENTE</div>
 			<div class="statement-grid">
-				<h2>Menos capas.<br />Más <i>control.</i></h2>
+				<h2>No solo programo.<br /><i>Entiendo el porqué.</i></h2>
 				<div>
 					<p class="large-copy">
-						Mi trabajo explora lo que ocurre debajo de las abstracciones modernas: desde el boot y
-						la memoria virtual hasta la generación de código nativo y el cómputo paralelo.
+						Me especializo en problemas donde no basta con conectar herramientas: hay que entender
+						qué ocurre debajo, decidir bien los límites y construir una base confiable.
 					</p>
 					<p>
-						Como arquitecto independiente, mantengo un laboratorio de más de 50 repositorios de
-						software de bajo nivel. Cada proyecto busca convertir teoría de sistemas en artefactos
-						medibles, depurables y ejecutables.
+						Desde 2019 mantengo un laboratorio independiente con más de 50 repositorios. No son solo
+						demostraciones: son una forma sostenida de aprender, validar ideas y enfrentar proyectos
+						que exigen paciencia, diseño y responsabilidad de extremo a extremo.
 					</p>
 				</div>
 			</div>
 
 			<div class="numbers" aria-label="Métricas destacadas">
+				<div><strong>6<sup>+</sup></strong><span>Años de I+D<br />independiente</span></div>
 				<div><strong>50<sup>+</sup></strong><span>Repositorios<br />de sistemas</span></div>
 				<div><strong>354<sup>K</sup></strong><span>Líneas en<br />ADead-BIB</span></div>
 				<div><strong>24.1</strong><span>TFLOPS pico<br />en GPU</span></div>
-				<div><strong>512<sup>B</sup></strong><span>Bootloader<br />experimental</span></div>
+			</div>
+		</section>
+
+		<section class="value-section section-pad" id="valor">
+			<div class="value-heading">
+				<div>
+					<div class="section-kicker light"><span>能</span> LO QUE APORTO A UN EQUIPO</div>
+					<h2>Profundidad técnica<br />con <i>criterio de producto.</i></h2>
+				</div>
+				<div class="recruiter-note">
+					<span>EN UNA FRASE</span>
+					<p>
+						Un ingeniero para problemas difíciles, capaz de investigar lo desconocido, explicar sus
+						decisiones y convertirlas en software real.
+					</p>
+				</div>
+			</div>
+
+			<div class="strength-grid">
+				{#each strengths as strength (strength.number)}
+					<article>
+						<span>{strength.number}</span>
+						<div class="strength-icon" aria-hidden="true">
+							{strength.number === '01'
+								? '全'
+								: strength.number === '02'
+									? '責'
+									: strength.number === '03'
+										? '証'
+										: '簡'}
+						</div>
+						<h3>{strength.title}</h3>
+						<p>{strength.text}</p>
+					</article>
+				{/each}
+			</div>
+
+			<div class="role-fit">
+				<span>PUEDO APORTAR ESPECIALMENTE EN</span>
+				<p>Ingeniería de sistemas</p>
+				<i></i>
+				<p>Compiladores</p>
+				<i></i>
+				<p>Plataformas</p>
+				<i></i>
+				<p>Rendimiento</p>
+				<i></i>
+				<p>I+D aplicada</p>
 			</div>
 		</section>
 
@@ -186,20 +286,48 @@
 
 			<div class="bmo-intro">
 				<p class="bmo-quote">
-					Un sistema operativo bare metal en Rust con un microkernel de capabilities y una
-					superficie congelada de <em>tres syscalls.</em>
+					Una plataforma propia para ejecutar software con <em>menos intermediarios</em> y reglas más
+					simples.
 				</p>
 				<p>
-					BMO-X investiga cómo reducir una plataforma completa a contratos pequeños y estables. El
-					sistema ejecuta Ring 0 y Ring 3 en una MSI A320M PRO MAX con Ryzen 5 5600X, y acompaña el
-					kernel con un toolchain propio para llevar C, C++ y COBOL a binarios nativos.
+					BMO-X es mi proyecto principal: un sistema operativo y un conjunto de compiladores que
+					investigan una pregunta concreta: ¿podemos construir una base pequeña, segura y estable
+					para que lenguajes como C, C++ y COBOL lleguen directamente al hardware?
 				</p>
 			</div>
 
+			<div class="bmo-why">
+				<article>
+					<span>EL PROBLEMA</span>
+					<h3>Demasiadas capas que cambian</h3>
+					<p>
+						Los sistemas acumulan interfaces, dependencias y costos difíciles de ver. Mantenerlos y
+						razonar sobre ellos se vuelve cada vez más complejo.
+					</p>
+				</article>
+				<article class="featured">
+					<span>POR QUÉ EXISTE</span>
+					<h3>Una base pequeña y estable</h3>
+					<p>
+						BMO-X reduce la entrada al sistema a tres operaciones. Todo lo demás crece como
+						capacidades explícitas, sin cambiar la base.
+					</p>
+				</article>
+				<article>
+					<span>PARA QUÉ SIRVE</span>
+					<h3>Software nativo y controlable</h3>
+					<p>
+						El objetivo es compilar programas —incluido COBOL— a un formato propio, verificable y
+						ejecutable directamente sobre BMO-X.
+					</p>
+				</article>
+			</div>
+
+			<div class="technical-divider"><span>LA IDEA TÉCNICA, EN UNA SOLA LÍNEA</span></div>
 			<div class="syscall-strip">
-				<div><span>0x00</span><b>INVOKE</b><small>Llamada síncrona</small></div>
-				<div><span>0x01</span><b>CHANNEL_KICK</b><small>Notificación asíncrona</small></div>
-				<div><span>0x02</span><b>WAIT</b><small>Espera bloqueante</small></div>
+				<div><span>01</span><b>INVOKE</b><small>Pedir una operación</small></div>
+				<div><span>02</span><b>CHANNEL_KICK</b><small>Avisar que hay trabajo</small></div>
+				<div><span>03</span><b>WAIT</b><small>Esperar sin desperdiciar recursos</small></div>
 			</div>
 
 			<div class="bmo-details">
@@ -232,13 +360,14 @@
 
 			<div class="cobol-callout">
 				<div class="cobol-title">
-					<span>FOCO ACTUAL</span>
+					<span>FOCO ACTUAL / MODERNIZACIÓN</span>
 					<h3>BMO COBOL</h3>
 				</div>
 				<p>
-					Un frontend nativo con aritmética decimal exacta guiada por PIC. El pipeline Source →
-					Lexer → Parser → AST → Codegen → BEF ya funciona; records avanzados, verbos, intrínsecas y
-					runtime siguen en construcción.
+					COBOL todavía sostiene procesos financieros y administrativos esenciales. Este frontend
+					busca conservar su precisión decimal y permitir que esos programas se conviertan en
+					software nativo de BMO-X, sin traducir primero a otro lenguaje. La base funciona; el
+					lenguaje completo sigue en construcción.
 				</p>
 				<div class="cobol-metrics">
 					<div><b>32</b><span>tests verdes</span></div>
@@ -260,24 +389,36 @@
 					<h2>Otros sistemas,<br /><i>la misma obsesión.</i></h2>
 				</div>
 				<p>
-					Investigación aplicada en compilación, sistemas operativos y cómputo de alto rendimiento.
+					Cada proyecto parte de una pregunta real, construye una respuesta y deja evidencia
+					medible.
 				</p>
 			</div>
 
 			<div class="project-list">
 				{#each projects as project (project.name)}
 					<article class="project-row">
-						<div class="project-index">{project.index}</div>
-						<div class="project-main">
+						<div class="project-topline">
+							<div class="project-index">{project.index}</div>
 							<p>{project.type}</p>
-							<h3>{project.name}</h3>
+							<div class="project-metric">
+								<b>{project.metric}</b><span>{project.metricLabel}</span>
+							</div>
+						</div>
+						<div class="project-body">
+							<div class="project-main">
+								<h3>{project.name}</h3>
+								<p class="project-purpose"><span>POR QUÉ EXISTE</span>{project.purpose}</p>
+							</div>
+							<div class="project-story">
+								<p class="project-description">{project.description}</p>
+								<p class="project-value"><span>LO QUE DEMUESTRA</span>{project.value}</p>
+							</div>
+						</div>
+						<div class="project-bottom">
 							<div class="tags">
 								{#each project.tags as tag (tag)}<span>{tag}</span>{/each}
 							</div>
-						</div>
-						<p class="project-description">{project.description}</p>
-						<div class="project-metric">
-							<b>{project.metric}</b><span>{project.metricLabel}</span>
+							<span class="case-label">CASO DE INGENIERÍA / {project.index}</span>
 						</div>
 					</article>
 				{/each}
@@ -285,31 +426,82 @@
 		</section>
 
 		<section class="expertise section-pad">
-			<div class="section-kicker light"><span>器</span> CAPACIDADES TÉCNICAS</div>
+			<div class="section-kicker light"><span>器</span> CAPACIDADES / EN CONTEXTO</div>
 			<div class="expertise-grid">
 				<div>
-					<h2>Ingeniería cerca<br />del <i>metal.</i></h2>
+					<h2>La tecnología es<br />un <i>medio, no el fin.</i></h2>
 					<p>
-						Trabajo donde las decisiones de arquitectura son visibles en memoria, instrucciones,
-						latencia y binarios.
+						Estas herramientas importan porque me permiten resolver problemas en distintas capas y
+						entender cómo una decisión termina afectando al usuario, al equipo y al hardware.
 					</p>
 				</div>
 				<div class="skill-list">
 					{#each skills as skill, i (skill.label)}
 						<div>
 							<span>0{i + 1}</span><b>{skill.label}</b>
-							<p>{skill.value}</p>
+							<p>{skill.meaning}</p>
+							<small>{skill.value}</small>
 						</div>
 					{/each}
 				</div>
 			</div>
 		</section>
 
+		<section class="method section-pad">
+			<div class="method-intro">
+				<div class="section-kicker"><span>法</span> CÓMO TRABAJO</div>
+				<h2>Del problema<br />a la <i>evidencia.</i></h2>
+				<p>
+					Mi proceso reduce incertidumbre antes de aumentar complejidad. Cada etapa debe producir
+					algo que el equipo pueda revisar.
+				</p>
+			</div>
+			<div class="method-track">
+				<article>
+					<span>01</span>
+					<div>
+						<b>Entender</b>
+						<p>Defino el problema, las restricciones y qué significa realmente tener éxito.</p>
+					</div>
+				</article>
+				<article>
+					<span>02</span>
+					<div>
+						<b>Diseñar</b>
+						<p>
+							Divido el sistema en contratos pequeños, responsabilidades claras y riesgos
+							verificables.
+						</p>
+					</div>
+				</article>
+				<article>
+					<span>03</span>
+					<div>
+						<b>Construir</b>
+						<p>
+							Implemento de abajo hacia arriba, manteniendo observabilidad y documentación útil.
+						</p>
+					</div>
+				</article>
+				<article>
+					<span>04</span>
+					<div>
+						<b>Demostrar</b>
+						<p>Mido en condiciones reales, documento límites y separo hechos de planes futuros.</p>
+					</div>
+				</article>
+			</div>
+		</section>
+
 		<section class="credentials section-pad">
 			<div class="credentials-grid">
 				<div>
-					<div class="section-kicker"><span>学</span> FORMACIÓN</div>
-					<h2>Aprendizaje continuo,<br /><i>práctica rigurosa.</i></h2>
+					<div class="section-kicker"><span>学</span> FORMACIÓN Y CREDENCIALES</div>
+					<h2>Fundamentos sólidos,<br /><i>curiosidad permanente.</i></h2>
+					<p class="credentials-note">
+						La formación acompaña una práctica independiente continua: cada concepto aprendido
+						termina probado en un sistema propio.
+					</p>
 				</div>
 				<div class="timeline">
 					<div class="timeline-item featured">
@@ -322,22 +514,22 @@
 					<div class="timeline-item">
 						<span>CERT.</span>
 						<div>
-							<h3>Data Engineering with Rust</h3>
-							<p>Coursera · Formación especializada</p>
+							<h3>Rust y Data Engineering with Rust</h3>
+							<p>Coursera · Formación y certificación especializada</p>
 						</div>
 					</div>
 					<div class="timeline-item">
 						<span>CERT.</span>
 						<div>
-							<h3>C · C++ · Rust</h3>
-							<p>Formación técnica y certificaciones</p>
+							<h3>C · C++ · Unreal Engine · R</h3>
+							<p>Udemy · Formación técnica complementaria</p>
 						</div>
 					</div>
 					<div class="timeline-item">
 						<span>CERT.</span>
 						<div>
-							<h3>Angular · Java · Python</h3>
-							<p>Desarrollo y análisis de datos</p>
+							<h3>Angular · Java · Data Analyst with Python</h3>
+							<p>Desarrollo de aplicaciones y análisis de datos</p>
 						</div>
 					</div>
 				</div>
@@ -347,10 +539,11 @@
 		<section class="contact section-pad" id="contacto">
 			<div class="contact-character" aria-hidden="true">合</div>
 			<div class="section-kicker light"><span>信</span> CONTACTO</div>
-			<h2>Construyamos algo que<br /><i>merezca existir.</i></h2>
+			<h2>¿Tu equipo enfrenta un<br /><i>problema difícil?</i></h2>
 			<p>
-				Disponible para conversaciones sobre ingeniería de sistemas, compiladores, kernels,
-				arquitectura de bajo nivel y colaboraciones de I+D.
+				Puedo aportar investigación, arquitectura y ejecución técnica en proyectos de sistemas,
+				compiladores, plataformas, rendimiento o I+D. Me interesa trabajar donde comprender bien el
+				problema sea tan importante como escribir el código.
 			</p>
 			<a
 				class="button primary large"
