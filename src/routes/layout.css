@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+	/* Paleta inspirada en el arte tradicional chino */
+	--color-arroz: #f5f0e6; /* 宣纸 papel de arroz (fondos) */
+	--color-tinta: #1a1a1a; /* 水墨 negro tinta (texto) */
+	--color-tinta-suave: #55524b; /* tinta diluida (texto secundario) */
+	--color-cinabrio: #c0362c; /* 朱砂 rojo cinabrio (acentos, sellos) */
+	--color-porcelana: #2e5a88; /* 青花 azul porcelana Ming */
+	--color-jade: #4a7c59; /* 玉 verde jade */
+	--color-dorado: #c9a227; /* 金 dorado imperial (detalles) */
+
+	--font-serifcn: 'Noto Serif SC', 'Georgia', serif;
+	--font-sanscn: 'Inter', system-ui, sans-serif;
+}
