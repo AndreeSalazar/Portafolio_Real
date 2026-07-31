@@ -136,7 +136,7 @@
 		['KIND_ARCHIVO', 'Ring 3 lee y guarda en FAT32', 'done'],
 		['Batch COBOL', 'Cierre leído en HW · reinicio pendiente', 'progress'],
 		['Frontend BMO Ada', '20/20 tests · BEX en hardware', 'done'],
-		['Frontend BMO COBOL', 'Base sólida · 10–15%', 'progress'],
+		['Frontend BMO COBOL', 'Perfil funcional · en expansión', 'progress'],
 		['Escritura ESTRATOS', 'Siguiente etapa crítica', 'planned'],
 		['Desktop / compositor', 'GUI cargada desde disco', 'done']
 	];
@@ -673,7 +673,7 @@
 							Decimal, PICTURE y procesamiento batch para reglas legibles por negocio. Es funcional,
 							no una implementación completa del estándar.
 						</p>
-						<small>10–15% · CORTE VERTICAL REAL</small>
+						<small>PERFIL ACOTADO · CORTE VERTICAL REAL</small>
 					</article>
 				</div>
 				<footer>
@@ -738,12 +738,13 @@
 					extremo. En un Ryzen real ya ejecuta cálculo y presentación bancaria; el siguiente corte
 					lee movimientos y escribe un cierre mediante capabilities. Eso no significa que todo COBOL
 					esté implementado: records avanzados, FILE STATUS, más verbos, intrínsecas y un runtime
-					mayor mantienen el frontend en aproximadamente 10–15%.
+					mayor siguen pendientes. Su alcance se comunica mediante capacidades comprobadas, no con
+					un porcentaje arbitrario de un ecosistema prácticamente inagotable.
 				</p>
 				<div class="cobol-metrics">
 					<div><b>10/10</b><span>pruebas de archivos</span></div>
 					<div><b>556</b><span>palabras catalogadas</span></div>
-					<div><b>10–15%</b><span>estado honesto</span></div>
+					<div><b>HW</b><span>ejecución en Ryzen real</span></div>
 				</div>
 			</div>
 
