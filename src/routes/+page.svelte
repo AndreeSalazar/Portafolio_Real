@@ -124,16 +124,21 @@
 	const bmoStatus = [
 		['Boot chain UEFI', 'Hardware real · no QEMU', 'done'],
 		['Meta-kernel Ring 0', 'Capabilities estables', 'done'],
-		['Userspace Ring 3', 'Ejecutando', 'done'],
+		['Userspace Ring 3', 'Probado · XSAVE confirmado en metal', 'done'],
 		['Aislamiento de fallos', 'Implementado', 'done'],
 		['Teclado USB', 'Escribe en HW · intervalo corregido', 'done'],
-		['Mouse USB', 'Enumera · puntero en compositor', 'progress'],
-		['SATA / AHCI', 'GPT + lectura verificadas', 'done'],
+		['Mouse USB', 'Puntero + botones por capability', 'done'],
+		['SATA / AHCI + FAT32', 'Lectura y escritura controlada', 'done'],
+		['ESTRATOS v1', 'Montaje + lectura en hardware', 'done'],
 		['BEF + verificación', 'Pipeline funcional', 'done'],
-		['Procesos BEX', 'ASM · C · COBOL terminan', 'done'],
+		['BEX desde disco', 'C + COBOL admitidos y ejecutados', 'done'],
 		['Programa BMO COBOL', 'Ejecuta lógica en Ryzen real', 'done'],
+		['KIND_ARCHIVO', 'Ring 3 lee y guarda en FAT32', 'done'],
+		['Batch COBOL', 'Cierre leído en HW · reinicio pendiente', 'progress'],
+		['Frontend BMO Ada', '20/20 tests · BEX en hardware', 'done'],
 		['Frontend BMO COBOL', 'Base sólida · 10–15%', 'progress'],
-		['Desktop / compositor', 'Próximo frente', 'planned']
+		['Escritura ESTRATOS', 'Siguiente etapa crítica', 'planned'],
+		['Desktop / compositor', 'GUI cargada desde disco', 'done']
 	];
 
 	const cobolPrograms = [
@@ -154,6 +159,18 @@
 			label: 'La integración completa',
 			text: 'Reúne variables PIC, escalas distintas, IF/ELSE, dos formas de PERFORM, ADD y COMPUTE en el BEX ejecutado por el Ryzen.',
 			state: 'Probado en hardware'
+		},
+		{
+			name: 'extracto.cob',
+			label: 'La línea bancaria',
+			text: 'Calcula un saldo, protege un talón con asteriscos, aplica formato monetario y marca un descubierto con CR.',
+			state: 'Probado en hardware'
+		},
+		{
+			name: 'batch.cob',
+			label: 'El cierre nocturno',
+			text: 'Lee movimientos, totaliza centavos, crea un cierre y solo persiste el resultado al ejecutar CLOSE.',
+			state: 'Software verificado · HW siguiente'
 		}
 	];
 
@@ -205,6 +222,102 @@
 			description:
 				'ASM, C y COBOL aparecen con PID, TID, tamaño, secciones y ciclo de vida propios. Los tres llegan a “terminado”: no son textos impresos por un único programa disfrazado, sino imágenes BEX cargadas y administradas por separado.',
 			facts: ['PID 1 · 2 · 3', 'TID 2 · 3 · 4', 'Todos terminados']
+		},
+		{
+			index: '05',
+			title: 'Del sector a un archivo real',
+			image: '/images/bmo-x/05-fat32-boot-volume.png',
+			width: 1599,
+			height: 899,
+			alt: 'BMO-X recorriendo AHCI, GPT y FAT32 hasta leer la cabecera de BOOTX64.EFI',
+			status: 'Cadena de lectura completa',
+			description:
+				'BMO-X monta la partición FAT32 en solo lectura, entra en EFI/BOOT, encuentra BOOTX64.EFI por su clúster y lee 64 bytes con firma MZ. La prueba valida el recorrido; no pretende verificar el archivo PE completo.',
+			facts: ['LBA 2048', 'Clúster 207', 'AHCI → GPT → FAT32']
+		},
+		{
+			index: '06',
+			title: 'C deja de vivir dentro del kernel',
+			image: '/images/bmo-x/06-c-from-estratos.png',
+			width: 890,
+			height: 562,
+			alt: 'BMO-X cargando apps/hola.bex desde ESTRATOS y ejecutando el programa C como tarea',
+			status: 'BEX cargado desde disco',
+			description:
+				'El comando run lee apps/hola.bex, verifica el contenido, lo admite como TID 7 y el scheduler lo ejecuta en el siguiente tick. Cambiar la aplicación ya no exige recompilar y embeberla dentro del kernel.',
+			facts: ['12.00 KiB', 'TID 7', 'C termina correctamente']
+		},
+		{
+			index: '07',
+			title: 'El primer estrato ya nace en el disco',
+			image: '/images/bmo-x/07-estratos-mounted.png',
+			width: 1599,
+			height: 899,
+			alt: 'BMO-X montando ESTRATOS generación 1 y listando su directorio raíz',
+			status: 'ESTRATOS v1 · lectura funcional',
+			description:
+				'El kernel encuentra el volumen por su magia, elige un superbloque válido, contrasta la identidad física y sigue el estrato “BMO-DATA nace” hasta listar apps, docs y leeme.txt desde su raíz.',
+			facts: ['Generación 1', 'Log en bloque 24', 'Identidad coincide']
+		},
+		{
+			index: '08',
+			title: 'COBOL también llega desde ESTRATOS',
+			image: '/images/bmo-x/08-cobol-from-estratos.png',
+			width: 718,
+			height: 476,
+			alt: 'BMO-X leyendo apps/COBOL.bex desde ESTRATOS y ejecutando decimal exacto',
+			status: 'Lenguaje → archivo → proceso',
+			description:
+				'La imagen COBOL ya no se limita al payload embebido de las primeras pruebas: aparece como apps/COBOL.bex, con origen ESTRATOS, lectura de 5.02 KiB, admisión independiente y la misma lógica decimal correcta.',
+			facts: ['Origen ESTRATOS', '5.02 KiB', '59.97 exacto']
+		},
+		{
+			index: '09',
+			title: 'El silicio corrige al perfil',
+			image: '/images/bmo-x/09-xsave-ring3-gate.png',
+			width: 1599,
+			height: 899,
+			alt: 'Diagnóstico de BMO-X comparando el área XSAVE real del Ryzen con el perfil estático',
+			status: 'Hardening de contexto Ring 3',
+			description:
+				'La captura registra el hallazgo: FXSAVE no preservaba el estado AVX completo. El código posterior usa XSAVE/XRSTOR, reserva el tamaño informado por CPUID y ya fue confirmado nuevamente sobre hardware.',
+			facts: ['CPUID manda', 'AVX detectado', 'Hallazgo corregido después']
+		},
+		{
+			index: '10',
+			title: 'COBOL produce una línea bancaria completa',
+			image: '/images/bmo-x/10-cobol-extracto-hardware.jpg',
+			width: 1599,
+			height: 899,
+			alt: 'BMO-X ejecutando apps/extracto.bex y mostrando saldo, talón protegido y cuenta en descubierto',
+			status: 'Semántica financiera en hardware',
+			description:
+				'El programa extracto.bex se lanza desde la interfaz de Ring 3 y produce formato monetario, protección con asteriscos, saldo negativo con CR y una decisión de descubierto. Los importes son datos de demostración; la aritmética y el formato sí son ejecutados.',
+			facts: ['PIC monetaria', 'IF de descubierto', 'BEX · Ring 3 · Ryzen']
+		},
+		{
+			index: '11',
+			title: 'Ada se convierte en el tercer lenguaje nativo',
+			image: '/images/bmo-x/11-ada-cierre-hardware.jpg',
+			width: 1599,
+			height: 899,
+			alt: 'BMO-X ejecutando apps/cierre.bex generado por el frontend propio de Ada',
+			status: 'Ada ejecutado en hardware',
+			description:
+				'El frontend BMO Ada genera cierre.bex sin GNAT ni runtime de Ada. En Ring 3, un tipo decimal con delta 0.01 suma tres cuotas hasta 59.97, resta una devolución y muestra 39.98 mediante la misma puerta de consola.',
+			facts: ['20/20 tests', '5,112 B', 'Ada · BEF · Ring 3']
+		},
+		{
+			index: '12',
+			title: 'El cierre batch vuelve desde el disco',
+			image: '/images/bmo-x/12-batch-cierre-read-hardware.jpg',
+			width: 1599,
+			height: 899,
+			alt: 'BMO-X leyendo apps/cierre.txt y mostrando el total batch 1135.00',
+			status: 'Resultado batch observado en hardware',
+			description:
+				'La interfaz de Ring 3 abre apps/cierre.txt y recupera 1135.00, el total esperado por las pruebas del batch COBOL. La captura acredita lectura física del resultado; una lectura después de reiniciar cerrará la prueba específica de persistencia.',
+			facts: ['apps/cierre.txt', '1,135.00 exacto', 'Reinicio: siguiente prueba']
 		}
 	];
 
@@ -431,7 +544,9 @@
 					BMO significa Bare Metal Orchestrator. No intenta copiar Windows o Linux función por
 					función: arranca el hardware, aplica capabilities, ofrece tres puertas estables y coordina
 					contenedores BEF. Cada lenguaje conserva su frontend y su semántica; BMO controla cómo el
-					resultado se valida y obtiene autoridad para ejecutarse.
+					resultado se valida y obtiene autoridad para ejecutarse. El modelo actual es AOT puro:
+					cada frontend produce código nativo antes de entrar al sistema, sin JIT durante la
+					ejecución.
 				</p>
 			</div>
 
@@ -456,8 +571,8 @@
 					<span>PARA QUÉ SIRVE</span>
 					<h3>Un contenedor común, no un lenguaje único</h3>
 					<p>
-						BEF empaqueta el resultado de COBOL, C, C++ u otros frontends. BMO verifica el
-						contenedor, asigna capabilities y coordina su ejecución nativa.
+						BEF empaqueta el resultado de C, Ada y COBOL. BMO verifica el contenedor, asigna
+						capabilities y coordina su ejecución nativa sin obligarlos a compartir semántica.
 					</p>
 				</article>
 			</div>
@@ -523,13 +638,58 @@
 				<div><span>03</span><b>WAIT</b><small>Esperar sin desperdiciar recursos</small></div>
 			</div>
 
+			<div class="language-strategy" data-reveal>
+				<header>
+					<div class="card-label">ESTRATEGIA / MENOS LENGUAJES, MÁS UTILIDAD</div>
+					<h3>No busco marcar casillas.<br /><em>Busco cubrir responsabilidades.</em></h3>
+					<p>
+						La meta no es anunciar compatibilidad total. Es construir perfiles esenciales, útiles y
+						auditables que crezcan según problemas reales.
+					</p>
+				</header>
+				<div class="language-grid">
+					<article>
+						<span>01 / CONTROL</span><b>C</b>
+						<h4>Hablar cerca del hardware</h4>
+						<p>
+							Base para sistemas, drivers y herramientas. El perfil esencial ya ejecuta en metal,
+							pero no se presenta como C completo.
+						</p>
+						<small>AMPLIO · AÚN EN DESARROLLO</small>
+					</article>
+					<article class="featured">
+						<span>02 / CORRECCIÓN</span><b>ADA</b>
+						<h4>Expresar reglas críticas</h4>
+						<p>
+							Tipos fuertes y decimal exacto para lógica donde los límites importan. El perfil
+							inicial ya genera y ejecuta BEX nativo.
+						</p>
+						<small>20/20 TESTS · HARDWARE REAL</small>
+					</article>
+					<article>
+						<span>03 / NEGOCIO</span><b>COBOL</b>
+						<h4>Conservar la intención financiera</h4>
+						<p>
+							Decimal, PICTURE y procesamiento batch para reglas legibles por negocio. Es funcional,
+							no una implementación completa del estándar.
+						</p>
+						<small>10–15% · CORTE VERTICAL REAL</small>
+					</article>
+				</div>
+				<footer>
+					<b>C++</b><span
+						>Permanece como extensión selectiva futura; mejorar C aporta más valor inmediato que
+						prometer otro frontend incompleto.</span
+					>
+				</footer>
+			</div>
+
 			<div class="bmo-details" data-reveal>
 				<div class="architecture-card">
 					<div class="card-label">DE UNA REGLA DE NEGOCIO AL HARDWARE</div>
 					<div class="flow">
 						<div>
-							<small>01</small><b>COBOL · C · C++ · OTROS</b><span
-								>Cada frontend conserva su semántica</span
+							<small>01</small><b>C · ADA · COBOL</b><span>Cada frontend conserva su semántica</span
 							>
 						</div>
 						<i>↓</i>
@@ -539,7 +699,7 @@
 						<i>↓</i>
 						<div>
 							<small>03</small><b>VERIFY + BEX</b><span
-								>Validación y descenso al ejecutable nativo</span
+								>AOT nativo: validación y ejecutable antes de correr</span
 							>
 						</div>
 						<i>↓</i>
@@ -574,27 +734,96 @@
 				</div>
 				<p>
 					COBOL todavía sostiene procesos financieros y administrativos esenciales. BMO COBOL ya
-					tiene lexer, parser por tokens, PIC propio, decimal exacto y salida BEF de extremo a
-					extremo. Un programa generado ya saluda y calcula <strong>3 × 19.99 = 59.97</strong> dentro
-					de BMO-X sobre un Ryzen real. Eso demuestra el corte vertical completo; no significa que todo
-					COBOL esté implementado. Records avanzados, verbos, archivos, intrínsecas y runtime mantienen
-					el frontend en aproximadamente 10–15%.
+					tiene lexer, parser, PIC propio, decimal exacto, archivos y salida BEF de extremo a
+					extremo. En un Ryzen real ya ejecuta cálculo y presentación bancaria; el siguiente corte
+					lee movimientos y escribe un cierre mediante capabilities. Eso no significa que todo COBOL
+					esté implementado: records avanzados, FILE STATUS, más verbos, intrínsecas y un runtime
+					mayor mantienen el frontend en aproximadamente 10–15%.
 				</p>
 				<div class="cobol-metrics">
-					<div><b>32</b><span>tests verdes</span></div>
+					<div><b>10/10</b><span>pruebas de archivos</span></div>
 					<div><b>556</b><span>palabras catalogadas</span></div>
 					<div><b>10–15%</b><span>estado honesto</span></div>
 				</div>
 			</div>
 
+			<div class="batch-feature" data-reveal>
+				<div class="batch-copy">
+					<div class="card-label">NUEVO CORTE / PROCESAMIENTO POR LOTES</div>
+					<span class="batch-state"><i></i> RESULTADO LEÍDO EN HARDWARE · REINICIO PENDIENTE</span>
+					<h3>Del movimiento diario<br /><em>al cierre auditable.</em></h3>
+					<p>
+						Un banco no vive de “Hola mundo”. Vive de procesos que reciben movimientos, los
+						totalizan sin perder centavos y dejan un resultado verificable. <strong
+							>batch.cob</strong
+						> ya completa esa cadena en pruebas y genera un BEX válido de 6,224 bytes.
+					</p>
+					<div class="batch-result">
+						<small>RESULTADO COMPROBADO</small>
+						<b>1,000.00 + 234.56 + 0.44 − 100.00</b>
+						<strong>$1,135.00</strong>
+					</div>
+				</div>
+				<div class="batch-flow" aria-label="Flujo del procesamiento batch COBOL">
+					<div><span>01</span><b>OPEN INPUT</b><small>apps/movim.txt</small></div>
+					<i>↓</i>
+					<div><span>02</span><b>READ · AT END</b><small>una línea por movimiento</small></div>
+					<i>↓</i>
+					<div><span>03</span><b>DECIMAL EXACTO</b><small>centavos · sin float</small></div>
+					<i>↓</i>
+					<div><span>04</span><b>WRITE + CLOSE</b><small>apps/cierre.txt</small></div>
+					<footer><b>KIND_ARCHIVO</b><span>autoridad explícita · máximo actual 4 KiB</span></footer>
+				</div>
+			</div>
+
+			<div class="ada-feature" data-reveal>
+				<div class="ada-heading">
+					<div class="card-label">TERCER LENGUAJE NATIVO / NUEVO FRONTEND</div>
+					<span>BMO ADA · PERFIL INICIAL Y HONESTO</span>
+					<h3>Una semántica distinta.<br /><em>El mismo contrato.</em></h3>
+					<p>
+						Ada no entra como una traducción de COBOL. Tiene lexer, parser y emisor propios; solo
+						comparte BEF, el lowering opcional y las puertas de BMO-X. Su primer perfil admite un
+						procedimiento aislado y rechaza explícitamente packages, genéricos y tareas todavía no
+						implementados.
+					</p>
+					<ul>
+						<li><b>20/20</b><span>pruebas correctas</span></li>
+						<li><b>5,112 B</b><span>cierre.bex</span></li>
+						<li><b>0</b><span>GNAT · runtime Ada</span></li>
+					</ul>
+				</div>
+				<div class="ada-code" aria-label="Fragmento real del primer programa BMO Ada">
+					<header><span></span><span></span><span></span><small>cierre.adb</small></header>
+					<pre><code
+							><b>type</b> Saldo <b>is delta</b> 0.01 <b>digits</b> 12;
+
+Total  : Saldo := 0.00;
+Cuota  : Saldo := 19.99;
+
+<b>while</b> Vueltas &lt; 3 <b>loop</b>
+   Total := Total + Cuota;
+   Vueltas := Vueltas + 1;
+<b>end loop</b>;
+
+Put_Line(Total);  <i>-- 59.97</i>
+Total := Total - 19.99;
+Put_Line(Total);  <i>-- 39.98</i></code
+						></pre>
+					<footer>
+						<span>ADA SOURCE</span><i>→</i><span>BEF/BEX</span><i>→</i><span>RING 3</span>
+					</footer>
+				</div>
+			</div>
+
 			<div class="cobol-source" data-reveal>
 				<div class="source-heading">
-					<div class="card-label">TRES FUENTES / UNA PROGRESIÓN VERIFICABLE</div>
+					<div class="card-label">CINCO FUENTES / UNA PROGRESIÓN VERIFICABLE</div>
 					<h3>No escribí una demostración vacía.<br /><i>Escribí reglas que pueden fallar.</i></h3>
 					<p>
-						Los tres ejemplos cumplen funciones distintas. El primero abre el camino; el segundo
-						prueba comportamiento financiero; el tercero integra todo y produce la evidencia visible
-						en el Ryzen.
+						Cada ejemplo añade una responsabilidad: hablar, calcular, integrar, presentar una línea
+						bancaria y finalmente procesar archivos. La última etapa permanece marcada como
+						pendiente de validación física.
 					</p>
 				</div>
 				<div class="source-code" aria-label="Fragmento real de hola_COBOL.cob">
@@ -625,12 +854,15 @@
 
 			<div class="evidence-heading" data-reveal>
 				<div>
-					<div class="section-kicker light"><span>证</span> CUATRO CAPTURAS / CUATRO PRUEBAS</div>
+					<div class="section-kicker light">
+						<span>证</span> DOCE CAPTURAS / UNA EVOLUCIÓN REAL
+					</div>
 					<h3>Lo que afirmo<br /><i>se puede observar.</i></h3>
 				</div>
 				<p>
-					Una sola foto puede parecer una casualidad. Esta secuencia conecta lenguaje, procesos,
-					privilegios, almacenamiento y depuración en el mismo sistema sobre hardware físico.
+					La secuencia conecta lenguaje, procesos, privilegios, FAT32, ESTRATOS y depuración de
+					contexto en el mismo sistema sobre hardware físico. También conserva los estados
+					intermedios.
 				</p>
 			</div>
 
@@ -663,15 +895,15 @@
 				<div>
 					<span>SÍ DEMUESTRA</span>
 					<p>
-						Fuente COBOL → frontend → BEF/BEX → verificación → proceso Ring 3 → INVOKE → Ring 0 →
-						salida en hardware real, además de carga separada para ASM y C.
+						Fuente COBOL → BEX → nodo ESTRATOS → BLAKE3 → admisión → proceso Ring 3 → INVOKE → Ring
+						0 → salida en hardware real, además de la misma ruta de disco para C.
 					</p>
 				</div>
 				<div>
 					<span>TODAVÍA NO AFIRMA</span>
 					<p>
-						Compatibilidad COBOL completa, runtime bancario productivo, escritura general de disco o
-						un escritorio terminado. El valor está en un núcleo real, medible y ampliable.
+						Compatibilidad COBOL completa, autenticidad criptográfica, escritura transaccional
+						ESTRATOS, rollback productivo o un escritorio terminado.
 					</p>
 				</div>
 			</div>
@@ -682,42 +914,46 @@
 						<div class="section-kicker light">
 							<span>层</span> ARQUITECTURA EN DESARROLLO / TIMEBACK
 						</div>
-						<p class="strata-status"><i></i> Diseño definido · implementación progresiva</p>
+						<p class="strata-status"><i></i> Lectura funcional · escritura en desarrollo</p>
 					</div>
 					<h3 id="strata-title">ESTRATOS</h3>
 					<p class="strata-lead">
-						Cada escritura crea una capa nueva sin destruir inmediatamente la anterior.
-						<strong>Guardar también significa recordar.</strong>
+						BMO-X ya monta y recorre su propio formato en hardware.
+						<strong>El siguiente paso es escribir sin destruir.</strong>
 					</p>
 				</div>
 
 				<div class="strata-concept" data-reveal>
 					<div
 						class="strata-visual"
-						aria-label="Representación de cuatro estados conservados por ESTRATOS"
+						aria-label="Recorrido de lectura verificado de ESTRATOS en hardware real"
 					>
 						<div class="stratum stratum-four">
-							<span>04</span><b>AHORA</b><small>nuevo estado verificado</small><i></i>
+							<span>04</span><b>BEX EJECUTADO</b><small>C + COBOL · RING 3</small><i></i>
 						</div>
 						<div class="stratum stratum-three">
-							<span>03</span><b>ANTES DE INSTALAR</b><small>raíz anterior intacta</small><i></i>
+							<span>03</span><b>RUTA RESUELTA</b><small>apps/COBOL.bex</small><i></i>
 						</div>
 						<div class="stratum stratum-two">
-							<span>02</span><b>COBOL FUNCIONANDO</b><small>estrato conservado</small><i></i>
+							<span>02</span><b>NODO LEÍDO</b><small>:datos + :firma BLAKE3</small><i></i>
 						</div>
 						<div class="stratum stratum-one">
-							<span>01</span><b>ORIGEN</b><small>primera raíz válida</small><i></i>
+							<span>01</span><b>VOLUMEN MONTADO</b><small>generación 1 · hardware</small><i></i>
 						</div>
-						<div class="strata-axis"><span>TIEMPO</span><i></i></div>
+						<div class="strata-axis"><span>RECORRIDO VERIFICADO</span><i></i></div>
 					</div>
 
 					<div class="strata-story">
-						<div class="card-label">LA IDEA, SIN JERGA</div>
-						<h4>Volver atrás no sería reconstruir.<br /><i>Sería volver a montar.</i></h4>
+						<div class="card-label">HOY / LECTURA VERIFICADA</div>
+						<h4>Del volumen al programa.<br /><i>Un recorrido real, no una simulación.</i></h4>
 						<p>
-							ESTRATOS está diseñado como un sistema copy-on-write: escribe datos nuevos, verifica
-							la nueva raíz y solo entonces la convierte en el estado actual. Si una operación se
-							interrumpe antes, la raíz anterior permanece disponible.
+							Hoy el kernel valida superbloques, la identidad física del volumen, hashes BLAKE3,
+							estratos, nodos, atributos y rutas antes de admitir un BEX desde el SSD.
+						</p>
+						<div class="card-label">SIGUIENTE / ESCRITURA TRANSACCIONAL</div>
+						<p>
+							La siguiente fase hará que una escritura publique una raíz nueva sin destruir la
+							anterior. Ese historial todavía está en desarrollo.
 						</p>
 						<div class="strata-transaction">
 							<span><b>01</b> escribir sin sobrescribir</span>
@@ -734,16 +970,16 @@
 						<span>01 / INTEGRIDAD</span>
 						<h4>Detectar corrupción</h4>
 						<p>
-							Bloques, nodos y raíces usarían BLAKE3. Si el contenido no coincide con su hash,
-							CABINA lo trataría como un fallo, no como un archivo misteriosamente alterado.
+							Bloques, nodos y raíces ya se comprueban con BLAKE3 al leer. Si un puntero no coincide
+							con su contenido, CABINA lo trata como corrupción y detiene el recorrido.
 						</p>
 					</article>
 					<article>
 						<span>02 / TRAZABILIDAD</span>
 						<h4>Conservar procedencia</h4>
 						<p>
-							Un BEX podría mantener juntos código, firma, manifiesto de capabilities y origen: qué
-							fuente lo produjo, con qué herramienta y bajo qué estado del sistema.
+							Un BEX ya mantiene juntos `:datos` y su hash `:firma`. Manifiesto de capabilities,
+							procedencia firmada y autoría criptográfica continúan como ampliaciones previstas.
 						</p>
 					</article>
 					<article>
@@ -769,8 +1005,8 @@
 						<span>UN EJECUTABLE COMO OBJETO AUDITABLE</span>
 						<h4>El programa y su contexto<br /><i>viajan juntos.</i></h4>
 						<p>
-							La propuesta evita archivos de metadatos sueltos. Firma, permisos solicitados y
-							procedencia serían atributos del mismo nodo que contiene el ejecutable.
+							El nodo actual ya une datos y hash BLAKE3 para comprobar integridad antes de admitir
+							un BEX. Manifiesto y procedencia muestran la extensión prevista del mismo modelo.
 						</p>
 					</div>
 					<div class="bex-object">
@@ -782,18 +1018,18 @@
 						</div>
 						<div>
 							<span>:firma</span>
-							<p>Integridad verificada</p>
+							<p>Integridad implementada · no autoría</p>
 							<i>BLAKE3</i>
 						</div>
 						<div>
 							<span>:manifiesto</span>
-							<p>Capabilities solicitadas</p>
-							<i>AUTH</i>
+							<p>Capabilities solicitadas · previsto</p>
+							<i>FUTURO</i>
 						</div>
 						<div>
 							<span>:origen</span>
-							<p>Fuente, compilador y momento</p>
-							<i>TRACE</i>
+							<p>Fuente, herramienta y momento · previsto</p>
+							<i>FUTURO</i>
 						</div>
 					</div>
 				</div>
@@ -808,19 +1044,21 @@
 						</p>
 					</div>
 					<ol>
-						<li class="active">
+						<li class="done">
 							<b>01</b><span>Base física</span><small>AHCI, sectores y GPT ya observables</small>
 						</li>
-						<li>
-							<b>02</b><span>FAT32 + identidad</span><small>lectura y gate antes de escribir</small>
+						<li class="done">
+							<b>02</b><span>FAT32 + identidad</span><small>rutas leídas y disco contrastado</small>
 						</li>
-						<li>
-							<b>03</b><span>Capa de bloques</span><small>contrato común para AHCI y NVMe</small>
+						<li class="done">
+							<b>03</b><span>Capa de bloques</span><small>ESTRATOS ya no habla con SATA</small>
 						</li>
-						<li>
-							<b>04</b><span>ESTRATOS lectura</span><small>montar y validar sin riesgo</small>
+						<li class="done">
+							<b>04</b><span>ESTRATOS lectura</span><small>montaje, rutas y BEX en hardware</small>
 						</li>
-						<li><b>05</b><span>Escritura</span><small>log, barreras y raíz alterna</small></li>
+						<li class="active">
+							<b>05</b><span>Escritura</span><small>siguiente: log, barreras y raíz alterna</small>
+						</li>
 						<li>
 							<b>06</b><span>GC + TimeBack</span><small>retención, diff y recuperación</small>
 						</li>
@@ -830,14 +1068,12 @@
 				<div class="strata-honesty" data-reveal>
 					<strong>ESTADO HONESTO / JULIO 2026</strong>
 					<p>
-						<strong
-							>TimeBack ya aporta el modelo de blobs, árboles, commits, refs, journal y CLI;</strong
-						>
-						parte de su captura y rollback todavía es infraestructura parcial. ESTRATOS es un diseño arquitectónico
-						documentado, aún no un sistema de ficheros implementado. La lectura SATA/GPT y la identificación
-						física son la base sobre la que se está construyendo.
+						<strong>ESTRATOS v1 ya es un sistema de ficheros legible por BMO-X:</strong> monta desde hardware,
+						contrasta identidad, verifica BLAKE3, recorre rutas y carga BEX de C y COBOL. Sigue siendo
+						solo lectura desde el kernel; escritura, múltiples generaciones, GC, rollback y autenticidad
+						criptográfica todavía no están terminados.
 					</p>
-					<span>DISEÑO ≠ CAPACIDAD TERMINADA</span>
+					<span>LECTURA REAL · ESCRITURA PENDIENTE</span>
 				</div>
 			</section>
 
@@ -898,14 +1134,14 @@
 		<section class="github-proof section-pad" id="github">
 			<div class="github-head" data-reveal>
 				<div>
-					<div class="section-kicker light"><span>证</span> EVIDENCIA PÚBLICA / GITHUB</div>
-					<h2>La ambición importa.<br /><i>La evidencia también.</i></h2>
+					<div class="section-kicker light"><span>证</span> CÓDIGO PÚBLICO / TRABAJO REVISABLE</div>
+					<h2>No tiene que creerme.<br /><i>Puede revisar el trabajo.</i></h2>
 				</div>
 				<div class="github-profile-card">
 					<span class="github-mark" aria-hidden="true">&lt;/&gt;</span>
 					<div>
 						<small>GITHUB.COM</small><b>@AndreeSalazar</b>
-						<p>Rust · Makefile · C++</p>
+						<p>Código fuente · historial · documentación</p>
 					</div>
 					<a href="https://github.com/AndreeSalazar" target="_blank" rel="noreferrer"
 						>Abrir perfil ↗</a
@@ -916,37 +1152,48 @@
 			<div class="public-proof" data-reveal>
 				<div class="proof-summary">
 					<strong>43</strong>
-					<span>repositorios públicos observables</span>
+					<span>repositorios públicos para inspeccionar</span>
 					<p>
-						El perfil muestra trabajo sostenido en compiladores, formatos binarios, ensambladores,
-						GPU y runtimes experimentales.
+						No todos tienen la misma madurez. Estos cuatro resumen una práctica constante: entender
+						problemas difíciles y convertirlos en sistemas que otras personas pueden abrir y
+						revisar.
 					</p>
 				</div>
 				<div class="proof-repos">
 					<a href="https://github.com/AndreeSalazar/ADead-BIB" target="_blank" rel="noreferrer"
-						><span>COMPILER</span><b>ADead-BIB</b><small>Rust · C99 · PE/ELF</small><i>↗</i></a
+						><span>COMPILADOR</span><b>ADead-BIB</b>
+						<p>Convierte código C en programas ejecutables y mantiene visible cada etapa.</p>
+						<small>RUST · C99 · PE/ELF</small><i>↗</i></a
 					>
 					<a href="https://github.com/AndreeSalazar/ASM-BIB" target="_blank" rel="noreferrer"
-						><span>TOOLCHAIN</span><b>ASM-BIB</b><small>Assembler · COFF · PE</small><i>↗</i></a
+						><span>HERRAMIENTAS</span><b>ASM-BIB</b>
+						<p>Ensambla, organiza y enlaza las piezas necesarias para formar un ejecutable.</p>
+						<small>ASSEMBLER · COFF · PE</small><i>↗</i></a
 					>
 					<a
 						href="https://github.com/AndreeSalazar/REACTOR-Framework-for-Vulkan-"
 						target="_blank"
 						rel="noreferrer"
-						><span>GRAPHICS</span><b>REACTOR</b><small>Rust · Vulkan</small><i>↗</i></a
+						><span>GRÁFICOS</span><b>REACTOR</b>
+						<p>
+							Ordena la complejidad de Vulkan para construir sin repetir toda su infraestructura.
+						</p>
+						<small>RUST · VULKAN</small><i>↗</i></a
 					>
 					<a href="https://github.com/AndreeSalazar/GPU-Driven" target="_blank" rel="noreferrer"
-						><span>COMPUTE</span><b>GPU-Driven</b><small>Rust · wgpu</small><i>↗</i></a
+						><span>CÓMPUTO</span><b>GPU-Driven</b>
+						<p>Mueve simulaciones masivas a la GPU para estudiar escala y rendimiento medible.</p>
+						<small>RUST · WGPU</small><i>↗</i></a
 					>
 				</div>
 			</div>
 
 			<div class="proof-disclosure" data-reveal>
-				<span>TRANSPARENCIA</span>
+				<span>QUÉ PUEDE COMPROBAR</span>
 				<p>
-					BMO-X, BEF y BMO COBOL se documentan aquí desde el árbol de trabajo y sus pruebas locales;
-					todavía no aparecen como repositorios públicos en este perfil. Los proyectos enlazados
-					arriba sí pueden inspeccionarse directamente.
+					Los cuatro proyectos enlazados se pueden inspeccionar directamente en GitHub. BMO-X, BEF,
+					BMO C, Ada y COBOL se documentan aquí con pruebas y capturas locales, pero todavía no se
+					presentan como repositorios públicos.
 				</p>
 			</div>
 		</section>
