@@ -125,20 +125,23 @@
 		['Boot chain UEFI', 'Hardware real · no QEMU', 'done'],
 		['Meta-kernel Ring 0', 'Capabilities estables', 'done'],
 		['Userspace Ring 3', 'Probado · XSAVE confirmado en metal', 'done'],
-		['Aislamiento de fallos', 'Implementado', 'done'],
+		['Aislamiento de fallos', 'Revocación de pantalla observada', 'done'],
 		['Teclado USB', 'Escribe en HW · intervalo corregido', 'done'],
-		['Mouse USB', 'Puntero + botones por capability', 'done'],
+		['Mouse USB', 'Descriptor HID · puntero y botones en metal', 'done'],
 		['SATA / AHCI + FAT32', 'Lectura y escritura controlada', 'done'],
 		['ESTRATOS v1', 'Montaje + lectura en hardware', 'done'],
 		['BEF + verificación', 'Pipeline funcional', 'done'],
-		['BEX desde disco', 'C + COBOL admitidos y ejecutados', 'done'],
-		['Programa BMO COBOL', 'Ejecuta lógica en Ryzen real', 'done'],
+		['BEX desde disco', 'C + Ada + COBOL ejecutados', 'done'],
+		['Frontend BMO C', '230 tests · base ejecutada en Ryzen', 'done'],
+		['Frontend BMO COBOL', '94 tests · batch en Ryzen', 'done'],
+		['Frontend BMO Ada', '20 tests · BEX en hardware', 'done'],
 		['KIND_ARCHIVO', 'Ring 3 lee y guarda en FAT32', 'done'],
-		['Batch COBOL', 'Cierre leído en HW · reinicio pendiente', 'progress'],
-		['Frontend BMO Ada', '20/20 tests · BEX en hardware', 'done'],
-		['Frontend BMO COBOL', 'Perfil funcional · en expansión', 'progress'],
-		['Escritura ESTRATOS', 'Siguiente etapa crítica', 'planned'],
-		['Desktop / compositor', 'GUI cargada desde disco', 'done']
+		['Batch COBOL', 'Escribe y relee el cierre en hardware', 'done'],
+		['Desktop / compositor', 'Arranque directo desde gui.bex', 'done'],
+		['Frontend BMO C++', '23 tests · CPU real pendiente', 'progress'],
+		['KIND_MEMORIA + doble búfer', 'Cableado · estreno físico pendiente', 'progress'],
+		['Foco de ventanas', '17 tests · Alt+Tab pendiente en metal', 'progress'],
+		['Escritura ESTRATOS', 'Motor probado · dispositivo pendiente', 'progress']
 	];
 
 	const cobolPrograms = [
@@ -170,7 +173,7 @@
 			name: 'batch.cob',
 			label: 'El cierre nocturno',
 			text: 'Lee movimientos, totaliza centavos, crea un cierre y solo persiste el resultado al ejecutar CLOSE.',
-			state: 'Software verificado · HW siguiente'
+			state: 'Probado en hardware'
 		}
 	];
 
@@ -318,6 +321,78 @@
 			description:
 				'La interfaz de Ring 3 abre apps/cierre.txt y recupera 1135.00, el total esperado por las pruebas del batch COBOL. La captura acredita lectura física del resultado; una lectura después de reiniciar cerrará la prueba específica de persistencia.',
 			facts: ['apps/cierre.txt', '1,135.00 exacto', 'Reinicio: siguiente prueba']
+		},
+		{
+			index: '13',
+			title: 'La placa elige BMO-X como un sistema real',
+			image: '/images/bmo-x/13-uefi-bmo-x-hardware.jpg',
+			width: 1280,
+			height: 725,
+			alt: 'Menú UEFI de una placa MSI mostrando BMO-X en el SSD Kingston junto a Windows Boot Manager',
+			status: 'Entrada UEFI sobre disco físico',
+			description:
+				'El firmware de la placa ofrece BMO-X en el SSD SATA junto a Windows Boot Manager. Esta fotografía aporta el contexto físico que una captura de pantalla o una ventana de QEMU no podría aportar por sí sola.',
+			facts: ['MSI A320M', 'Kingston SATA', 'UEFI · no hipervisor']
+		},
+		{
+			index: '14',
+			title: 'El escritorio de Ring 3 ya es el arranque',
+			image: '/images/bmo-x/14-desktop-ring3-hardware.jpg',
+			width: 1599,
+			height: 899,
+			alt: 'Escritorio y ventana Ejecutar de BMO-X dibujados por gui.bex en Ring 3',
+			status: 'Compositor cargado desde disco',
+			description:
+				'gui.bex pinta el escritorio y su ventana Ejecutar fuera del kernel. La pantalla llega mediante una capability: cambiar la interfaz ya no obliga a recompilar Ring 0, y el shell permite lanzar otros BEX desde disco.',
+			facts: ['gui.bex', 'Framebuffer capability', 'Ring 3 interactivo']
+		},
+		{
+			index: '15',
+			title: 'El sistema se explica desde dentro',
+			image: '/images/bmo-x/15-info-zen3-hardware.jpg',
+			width: 1599,
+			height: 899,
+			alt: 'Panel info de BMO-X mostrando Ryzen Zen 3, memoria, procesos y estado del disco',
+			status: 'Telemetría del Ryzen real',
+			description:
+				'La vista info identifica Zen 3, seis núcleos físicos, doce hilos, frecuencia medida, memoria y programas lanzados. No es una cifra de marketing: es el propio sistema describiendo el banco de pruebas donde está corriendo.',
+			facts: ['Ryzen 5 5600X', '6C / 12T', '14.8 GiB detectados']
+		},
+		{
+			index: '16',
+			title: 'C ejecuta aritmética, texto y control',
+			image: '/images/bmo-x/16-c-hardware.jpg',
+			width: 1599,
+			height: 899,
+			alt: 'Programa holac.bex generado por BMO C mostrando aritmética, cadenas y hexadecimal en Ryzen',
+			status: 'BMO C ejecutado en silicio',
+			description:
+				'holac.bex recorre un bucle, opera enteros con signo, divide, calcula módulo e imprime cadenas y hexadecimal. La misma pantalla conserva su procedencia FAT32 y declara por qué allí no puede llevar el atributo de integridad de ESTRATOS.',
+			facts: ['suma 1..10 = 55', 'cadena=viva', 'hex=beef']
+		},
+		{
+			index: '17',
+			title: 'COBOL ya conversa con una persona',
+			image: '/images/bmo-x/17-cobol-accept-hardware.jpg',
+			width: 1599,
+			height: 899,
+			alt: 'Calculadora COBOL en BMO-X leyendo dos importes y mostrando suma y resta exactas',
+			status: 'ACCEPT + decimal exacto en Ryzen',
+			description:
+				'calc.bex recibe 5 y 90 desde la consola del proceso que lo lanzó, y responde 95.00 y −85.00. El programa no necesita apropiarse del teclado: lee por su capability de consola, lo que mantiene separada la entrada física de la lógica COBOL.',
+			facts: ['ACCEPT', '95.00 exacto', 'KIND_CONSOLE']
+		},
+		{
+			index: '18',
+			title: 'Cuando un proceso muere, la pantalla vuelve',
+			image: '/images/bmo-x/18-cabina-revocacion-hardware.jpg',
+			width: 1599,
+			height: 899,
+			alt: 'CABINA registrando que el dueño Ring 3 del framebuffer murió y el kernel recuperó la pantalla',
+			status: 'Revocación observada en hardware',
+			description:
+				'CABINA registra la cesión de pantalla, mouse y consola; luego advierte que el dueño del framebuffer murió y devuelve el panel al kernel. Es una prueba especialmente valiosa: muestra recuperación ante fallo, no solo el camino feliz.',
+			facts: ['revoke_all', 'eventos perdidos = 0', 'Ring 3 aislado']
 		}
 	];
 
@@ -473,7 +548,7 @@
 				<div><strong>6<sup>+</sup></strong><span>Años de I+D<br />independiente</span></div>
 				<div><strong>43</strong><span>Repositorios<br />públicos</span></div>
 				<div><strong>41</strong><span>Casos C visibles<br />en ADead-BIB</span></div>
-				<div><strong>32</strong><span>Tests del frontend<br />BMO COBOL</span></div>
+				<div><strong>413</strong><span>Tests verificados<br />en BMO-X</span></div>
 			</div>
 		</section>
 
@@ -652,10 +727,11 @@
 						<span>01 / CONTROL</span><b>C</b>
 						<h4>Hablar cerca del hardware</h4>
 						<p>
-							Base para sistemas, drivers y herramientas. El perfil esencial ya ejecuta en metal,
-							pero no se presenta como C completo.
+							Base para sistemas, drivers y herramientas. Ya cubre entrada, agregados, memoria,
+							varargs, campos de bits y una libc esencial; sus capacidades se amplían por necesidad,
+							no para fingir todo el estándar.
 						</p>
-						<small>AMPLIO · AÚN EN DESARROLLO</small>
+						<small>230 TESTS · BASE EJECUTADA EN RYZEN</small>
 					</article>
 					<article class="featured">
 						<span>02 / CORRECCIÓN</span><b>ADA</b>
@@ -673,13 +749,14 @@
 							Decimal, PICTURE y procesamiento batch para reglas legibles por negocio. Es funcional,
 							no una implementación completa del estándar.
 						</p>
-						<small>PERFIL ACOTADO · CORTE VERTICAL REAL</small>
+						<small>94 TESTS · BATCH EJECUTADO EN HARDWARE</small>
 					</article>
 				</div>
 				<footer>
-					<b>C++</b><span
-						>Permanece como extensión selectiva futura; mejorar C aporta más valor inmediato que
-						prometer otro frontend incompleto.</span
+					<b>C++ · I+D ACTIVA</b><span
+						>Ya emite BEX y ejecuta clases, RAII, sobrecarga, herencia simple y despacho virtual en
+						23 pruebas automatizadas. Sigue marcado como software sin estreno físico: no se presenta
+						como C++ completo ni como ejecución confirmada en el Ryzen.</span
 					>
 				</footer>
 			</div>
@@ -716,7 +793,7 @@
 				</div>
 
 				<div class="status-card">
-					<div class="card-label">ESTADO VERIFICADO / JULIO 2026</div>
+					<div class="card-label">ESTADO VERIFICADO / AGOSTO 2026</div>
 					<ul>
 						{#each bmoStatus as item (item[0])}
 							<li>
@@ -727,6 +804,49 @@
 				</div>
 			</div>
 
+			<div class="verification-ledger" data-reveal>
+				<header>
+					<div class="card-label">LA FRONTERA IMPORTA</div>
+					<h3>Tres estados.<br /><em>Ninguna promesa mezclada.</em></h3>
+					<p>
+						Esta separación convierte el progreso en información útil para una decisión técnica o de
+						negocio: qué puede demostrarse hoy, qué está probado sin hardware y qué sigue siendo
+						visión.
+					</p>
+				</header>
+				<div class="verification-states">
+					<article class="metal">
+						<span>01 / OBSERVADO</span><b>METAL</b>
+						<h4>Ya ocurrió en el Ryzen</h4>
+						<p>
+							Arranque UEFI, Ring 3, teclado y mouse, escritorio, C, Ada, COBOL interactivo, batch
+							con archivos y recuperación de pantalla ante la muerte de un proceso.
+						</p>
+					</article>
+					<article class="software">
+						<span>02 / VERIFICADO</span><b>SOFTWARE</b>
+						<h4>Funciona en pruebas, falta estrenarlo</h4>
+						<p>
+							KIND_MEMORIA, doble búfer, foco Alt+Tab, transacciones de ESTRATOS y el perfil C++
+							tienen código y pruebas, pero todavía no se anuncian como hechos físicos.
+						</p>
+					</article>
+					<article class="design">
+						<span>03 / DIRECCIÓN</span><b>DISEÑO</b>
+						<h4>Existe como arquitectura, no como producto</h4>
+						<p>
+							TimeBack completo, recolección de estratos, rollback operativo, autenticidad
+							criptográfica y uso bancario productivo continúan fuera de las afirmaciones actuales.
+						</p>
+					</article>
+				</div>
+				<footer>
+					<strong>413</strong><span
+						>tests ejecutados ahora en C, C++, COBOL, Ada y ESTRATOS · todos verdes</span
+					>
+				</footer>
+			</div>
+
 			<div class="cobol-callout" data-reveal>
 				<div class="cobol-title">
 					<span>FOCO ACTUAL / MODERNIZACIÓN</span>
@@ -735,14 +855,15 @@
 				<p>
 					COBOL todavía sostiene procesos financieros y administrativos esenciales. BMO COBOL ya
 					tiene lexer, parser, PIC propio, decimal exacto, archivos y salida BEF de extremo a
-					extremo. En un Ryzen real ya ejecuta cálculo y presentación bancaria; el siguiente corte
-					lee movimientos y escribe un cierre mediante capabilities. Eso no significa que todo COBOL
-					esté implementado: records avanzados, FILE STATUS, más verbos, intrínsecas y un runtime
-					mayor siguen pendientes. Su alcance se comunica mediante capacidades comprobadas, no con
-					un porcentaje arbitrario de un ecosistema prácticamente inagotable.
+					extremo. En un Ryzen real ya recibe datos por consola, presenta importes y ejecuta un
+					batch que lee movimientos, totaliza centavos, escribe el cierre y lo vuelve a leer. Eso no
+					significa que todo COBOL esté implementado: records avanzados, FILE STATUS, más verbos,
+					intrínsecas y un runtime mayor siguen pendientes. Su alcance se comunica mediante
+					capacidades comprobadas, no con un porcentaje arbitrario de un ecosistema prácticamente
+					inagotable.
 				</p>
 				<div class="cobol-metrics">
-					<div><b>10/10</b><span>pruebas de archivos</span></div>
+					<div><b>94/94</b><span>tests del frontend</span></div>
 					<div><b>556</b><span>palabras catalogadas</span></div>
 					<div><b>HW</b><span>ejecución en Ryzen real</span></div>
 				</div>
@@ -823,8 +944,8 @@ Put_Line(Total);  <i>-- 39.98</i></code
 					<h3>No escribí una demostración vacía.<br /><i>Escribí reglas que pueden fallar.</i></h3>
 					<p>
 						Cada ejemplo añade una responsabilidad: hablar, calcular, integrar, presentar una línea
-						bancaria y finalmente procesar archivos. La última etapa permanece marcada como
-						pendiente de validación física.
+						bancaria y finalmente procesar archivos. La última etapa ya fue ejecutada en hardware;
+						la persistencia específica después de reiniciar continúa como una prueba distinta.
 					</p>
 				</div>
 				<div class="source-code" aria-label="Fragmento real de hola_COBOL.cob">
@@ -856,7 +977,7 @@ Put_Line(Total);  <i>-- 39.98</i></code
 			<div class="evidence-heading" data-reveal>
 				<div>
 					<div class="section-kicker light">
-						<span>证</span> DOCE CAPTURAS / UNA EVOLUCIÓN REAL
+						<span>证</span> DIECIOCHO CAPTURAS / UNA EVOLUCIÓN REAL
 					</div>
 					<h3>Lo que afirmo<br /><i>se puede observar.</i></h3>
 				</div>
@@ -896,15 +1017,16 @@ Put_Line(Total);  <i>-- 39.98</i></code
 				<div>
 					<span>SÍ DEMUESTRA</span>
 					<p>
-						Fuente COBOL → BEX → nodo ESTRATOS → BLAKE3 → admisión → proceso Ring 3 → INVOKE → Ring
-						0 → salida en hardware real, además de la misma ruta de disco para C.
+						Arranque UEFI → kernel → escritorio Ring 3 → ejecución BEX de C, Ada y COBOL → entrada,
+						archivos y recuperación de capabilities sobre el mismo Ryzen físico.
 					</p>
 				</div>
 				<div>
 					<span>TODAVÍA NO AFIRMA</span>
 					<p>
-						Compatibilidad COBOL completa, autenticidad criptográfica, escritura transaccional
-						ESTRATOS, rollback productivo o un escritorio terminado.
+						Compatibilidad total de ningún lenguaje, C++ en metal, escritura ESTRATOS conectada al
+						dispositivo, rollback productivo, autenticidad criptográfica o producto bancario
+						terminado.
 					</p>
 				</div>
 			</div>
@@ -915,12 +1037,12 @@ Put_Line(Total);  <i>-- 39.98</i></code
 						<div class="section-kicker light">
 							<span>层</span> ARQUITECTURA EN DESARROLLO / TIMEBACK
 						</div>
-						<p class="strata-status"><i></i> Lectura funcional · escritura en desarrollo</p>
+						<p class="strata-status"><i></i> Lectura en metal · motor de escritura en software</p>
 					</div>
 					<h3 id="strata-title">ESTRATOS</h3>
 					<p class="strata-lead">
 						BMO-X ya monta y recorre su propio formato en hardware.
-						<strong>El siguiente paso es escribir sin destruir.</strong>
+						<strong>La transacción existe; ahora debe llegar al dispositivo real.</strong>
 					</p>
 				</div>
 
@@ -951,10 +1073,12 @@ Put_Line(Total);  <i>-- 39.98</i></code
 							Hoy el kernel valida superbloques, la identidad física del volumen, hashes BLAKE3,
 							estratos, nodos, atributos y rutas antes de admitir un BEX desde el SSD.
 						</p>
-						<div class="card-label">SIGUIENTE / ESCRITURA TRANSACCIONAL</div>
+						<div class="card-label">EN SOFTWARE / ESCRITURA TRANSACCIONAL</div>
 						<p>
-							La siguiente fase hará que una escritura publique una raíz nueva sin destruir la
-							anterior. Ese historial todavía está en desarrollo.
+							La máquina de estados ya reserva, escribe, exige una barrera y alterna el superbloque
+							para publicar una raíz nueva sin destruir la anterior. Sus pruebas pasan; todavía no
+							está cableada al dispositivo, por lo que ningún dato real se anuncia como escrito por
+							ESTRATOS.
 						</p>
 						<div class="strata-transaction">
 							<span><b>01</b> escribir sin sobrescribir</span>
@@ -1058,7 +1182,9 @@ Put_Line(Total);  <i>-- 39.98</i></code
 							<b>04</b><span>ESTRATOS lectura</span><small>montaje, rutas y BEX en hardware</small>
 						</li>
 						<li class="active">
-							<b>05</b><span>Escritura</span><small>siguiente: log, barreras y raíz alterna</small>
+							<b>05</b><span>Escritura</span><small
+								>motor probado · falta conectar el dispositivo</small
+							>
 						</li>
 						<li>
 							<b>06</b><span>GC + TimeBack</span><small>retención, diff y recuperación</small>
@@ -1067,21 +1193,21 @@ Put_Line(Total);  <i>-- 39.98</i></code
 				</div>
 
 				<div class="strata-honesty" data-reveal>
-					<strong>ESTADO HONESTO / JULIO 2026</strong>
+					<strong>ESTADO HONESTO / AGOSTO 2026</strong>
 					<p>
 						<strong>ESTRATOS v1 ya es un sistema de ficheros legible por BMO-X:</strong> monta desde hardware,
-						contrasta identidad, verifica BLAKE3, recorre rutas y carga BEX de C y COBOL. Sigue siendo
-						solo lectura desde el kernel; escritura, múltiples generaciones, GC, rollback y autenticidad
-						criptográfica todavía no están terminados.
+						contrasta identidad, verifica BLAKE3, recorre rutas y carga BEX de C y COBOL. El motor de
+						escritura transaccional está probado en software, no conectado al disco. Múltiples generaciones
+						operativas, GC, rollback y autenticidad criptográfica todavía no están terminados.
 					</p>
-					<span>LECTURA REAL · ESCRITURA PENDIENTE</span>
+					<span>LECTURA REAL · TRANSACCIÓN PROBADA · DISPOSITIVO PENDIENTE</span>
 				</div>
 			</section>
 
 			<p class="evidence-note">
 				<span>NOTA DE INGENIERÍA</span> Las capturas corresponden a etapas distintas del desarrollo. Los
 				fallos históricos se muestran porque documentar cómo se detectaron y corrigieron también es parte
-				de la evidencia. Estado contrastado con la bitácora del proyecto en julio de 2026.
+				de la evidencia. Estado contrastado con la bitácora y las pruebas del proyecto en agosto de 2026.
 			</p>
 		</section>
 
