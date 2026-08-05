@@ -21,3 +21,9 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Preparacion privada - NO publicar
+# El guion de entrevista vive en ../PREPARACION, fuera del repo.
+guión.md
+guion.md
+/PREPARACION

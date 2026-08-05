@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	// Dominio final del sitio. Las tarjetas de LinkedIn, X y Slack necesitan URLs
+	// absolutas: si esto no coincide con el dominio real, se comparte sin imagen.
+	const SITE_URL = 'https://eddisalazar.vercel.app';
+	const OG_IMAGE = `${SITE_URL}/images/bmo-x/14-desktop-ring3-hardware.jpg`;
+
 	const projects = [
 		{
 			index: '02',
@@ -132,16 +137,16 @@
 		['ESTRATOS v1', 'Montaje + lectura en hardware', 'done'],
 		['BEF + verificación', 'Pipeline funcional', 'done'],
 		['BEX desde disco', 'C + Ada + COBOL ejecutados', 'done'],
-		['Frontend BMO C', '230 tests · base ejecutada en Ryzen', 'done'],
-		['Frontend BMO COBOL', '94 tests · batch en Ryzen', 'done'],
+		['Frontend BMO C', '238 tests · base ejecutada en Ryzen', 'done'],
+		['Frontend BMO COBOL', '217 tests · batch en Ryzen', 'done'],
 		['Frontend BMO Ada', '20 tests · BEX en hardware', 'done'],
 		['KIND_ARCHIVO', 'Ring 3 lee y guarda en FAT32', 'done'],
 		['Batch COBOL', 'Escribe y relee el cierre en hardware', 'done'],
 		['Desktop / compositor', 'Arranque directo desde gui.bex', 'done'],
+		['KIND_MEMORIA + doble búfer', '8.4 MiB confirmados desde el kernel', 'done'],
+		['Foco de ventanas', 'Alt+Tab + MRU observados en metal', 'done'],
 		['Frontend BMO C++', '23 tests · CPU real pendiente', 'progress'],
-		['KIND_MEMORIA + doble búfer', 'Cableado · estreno físico pendiente', 'progress'],
-		['Foco de ventanas', '17 tests · Alt+Tab pendiente en metal', 'progress'],
-		['Escritura ESTRATOS', 'Motor probado · dispositivo pendiente', 'progress']
+		['Escritura ESTRATOS', 'Cableada al disco · sellar pendiente en metal', 'progress']
 	];
 
 	const cobolPrograms = [
@@ -438,11 +443,30 @@
 		content="Portafolio de Eddi Andreé Salazar Matos, ingeniero de software de sistemas y arquitecto de sistemas especializado en kernels, compiladores y cómputo GPU."
 	/>
 	<meta name="theme-color" content="#0b0b0a" />
+	<link rel="canonical" href={SITE_URL} />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={SITE_URL} />
+	<meta property="og:site_name" content="Eddi Andreé Salazar" />
+	<meta property="og:locale" content="es_PE" />
 	<meta property="og:title" content="Eddi Andreé Salazar — Systems Software Engineer" />
 	<meta
 		property="og:description"
 		content="Compiladores, sistemas operativos y cómputo de bajo nivel construidos desde sus fundamentos."
 	/>
+	<meta property="og:image" content={OG_IMAGE} />
+	<meta property="og:image:width" content="1599" />
+	<meta property="og:image:height" content="899" />
+	<meta
+		property="og:image:alt"
+		content="El escritorio de BMO-X corriendo en Ring 3 sobre un AMD Ryzen 5 5600X real."
+	/>
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Eddi Andreé Salazar — Systems Software Engineer" />
+	<meta
+		name="twitter:description"
+		content="Compiladores, sistemas operativos y cómputo de bajo nivel construidos desde sus fundamentos."
+	/>
+	<meta name="twitter:image" content={OG_IMAGE} />
 </svelte:head>
 
 <div class="site-shell">
@@ -537,7 +561,7 @@
 						qué ocurre debajo, decidir bien los límites y construir una base confiable.
 					</p>
 					<p>
-						Desde 2019 mantengo un laboratorio independiente con 43 repositorios públicos. No son
+						Desde 2019 mantengo un laboratorio independiente con 45 repositorios públicos. No son
 						solo demostraciones: son una forma sostenida de aprender, validar ideas y enfrentar
 						proyectos que exigen paciencia, diseño y responsabilidad de extremo a extremo.
 					</p>
@@ -546,9 +570,9 @@
 
 			<div class="numbers" aria-label="Métricas destacadas" data-reveal>
 				<div><strong>6<sup>+</sup></strong><span>Años de I+D<br />independiente</span></div>
-				<div><strong>43</strong><span>Repositorios<br />públicos</span></div>
+				<div><strong>45</strong><span>Repositorios<br />públicos</span></div>
 				<div><strong>41</strong><span>Casos C visibles<br />en ADead-BIB</span></div>
-				<div><strong>413</strong><span>Tests verificados<br />en BMO-X</span></div>
+				<div><strong>544</strong><span>Tests críticos<br />verificados ahora</span></div>
 			</div>
 		</section>
 
@@ -607,7 +631,12 @@
 					<h2>BMO-X</h2>
 					<p class="bmo-subtitle">Bare Metal Orchestrator · Meta-Kernel</p>
 				</div>
-				<div class="status-badge"><i></i> Validado en hardware real · no QEMU</div>
+				<div class="bmo-head-actions">
+					<div class="status-badge"><i></i> Validado en hardware real · no QEMU</div>
+					<a href="https://github.com/AndreeSalazar/BMO-X" target="_blank" rel="noreferrer"
+						>Repositorio público <span>↗</span></a
+					>
+				</div>
 			</div>
 
 			<div class="bmo-intro" data-reveal>
@@ -731,7 +760,7 @@
 							varargs, campos de bits y una libc esencial; sus capacidades se amplían por necesidad,
 							no para fingir todo el estándar.
 						</p>
-						<small>230 TESTS · BASE EJECUTADA EN RYZEN</small>
+						<small>238 TESTS · BASE EJECUTADA EN RYZEN</small>
 					</article>
 					<article class="featured">
 						<span>02 / CORRECCIÓN</span><b>ADA</b>
@@ -746,10 +775,10 @@
 						<span>03 / NEGOCIO</span><b>COBOL</b>
 						<h4>Conservar la intención financiera</h4>
 						<p>
-							Decimal, PICTURE y procesamiento batch para reglas legibles por negocio. Es funcional,
-							no una implementación completa del estándar.
+							Decimal, PICTURE, COMP-3, registros, COPYBOOK, FILE STATUS y procesamiento batch para
+							reglas legibles por negocio. Es funcional, no una implementación completa del estándar.
 						</p>
-						<small>94 TESTS · BATCH EJECUTADO EN HARDWARE</small>
+						<small>217 TESTS · BATCH EJECUTADO EN HARDWARE</small>
 					</article>
 				</div>
 				<footer>
@@ -820,15 +849,16 @@
 						<h4>Ya ocurrió en el Ryzen</h4>
 						<p>
 							Arranque UEFI, Ring 3, teclado y mouse, escritorio, C, Ada, COBOL interactivo, batch
-							con archivos y recuperación de pantalla ante la muerte de un proceso.
+							con archivos, memoria para doble búfer, foco Alt+Tab y recuperación de pantalla ante la
+							muerte de un proceso.
 						</p>
 					</article>
 					<article class="software">
 						<span>02 / VERIFICADO</span><b>SOFTWARE</b>
-						<h4>Funciona en pruebas, falta estrenarlo</h4>
+						<h4>La siguiente frontera ya tiene base</h4>
 						<p>
-							KIND_MEMORIA, doble búfer, foco Alt+Tab, transacciones de ESTRATOS y el perfil C++
-							tienen código y pruebas, pero todavía no se anuncian como hechos físicos.
+							El perfil C++ tiene 23 pruebas. ESTRATOS ya monta, navega y carga BEX en metal; su comando
+							de sellado está cableado al dispositivo, pero falta demostrar persistencia tras reiniciar.
 						</p>
 					</article>
 					<article class="design">
@@ -841,8 +871,8 @@
 					</article>
 				</div>
 				<footer>
-					<strong>413</strong><span
-						>tests ejecutados ahora en C, C++, COBOL, Ada y ESTRATOS · todos verdes</span
+					<strong>544</strong><span
+						>pruebas verdes en los cinco componentes destacados: C, C++, COBOL, Ada y ESTRATOS</span
 					>
 				</footer>
 			</div>
@@ -854,16 +884,18 @@
 				</div>
 				<p>
 					COBOL todavía sostiene procesos financieros y administrativos esenciales. BMO COBOL ya
-					tiene lexer, parser, PIC propio, decimal exacto, archivos y salida BEF de extremo a
+					tiene lexer, parser, PIC propio, decimal exacto, archivos, registros binarios, COPYBOOK,
+					FILE STATUS, EVALUATE, ROUNDED, STRING, INSPECT, GO TO, ON SIZE ERROR y PERFORM VARYING,
+					además de salida BEF de extremo a
 					extremo. En un Ryzen real ya recibe datos por consola, presenta importes y ejecuta un
 					batch que lee movimientos, totaliza centavos, escribe el cierre y lo vuelve a leer. Eso no
-					significa que todo COBOL esté implementado: records avanzados, FILE STATUS, más verbos,
-					intrínsecas y un runtime mayor siguen pendientes. Su alcance se comunica mediante
+					significa que todo COBOL esté implementado: más verbos, intrínsecas y un runtime mayor
+					siguen pendientes. Su alcance se comunica mediante
 					capacidades comprobadas, no con un porcentaje arbitrario de un ecosistema prácticamente
 					inagotable.
 				</p>
 				<div class="cobol-metrics">
-					<div><b>94/94</b><span>tests del frontend</span></div>
+					<div><b>217/217</b><span>tests del frontend</span></div>
 					<div><b>556</b><span>palabras catalogadas</span></div>
 					<div><b>HW</b><span>ejecución en Ryzen real</span></div>
 				</div>
@@ -1024,9 +1056,8 @@ Put_Line(Total);  <i>-- 39.98</i></code
 				<div>
 					<span>TODAVÍA NO AFIRMA</span>
 					<p>
-						Compatibilidad total de ningún lenguaje, C++ en metal, escritura ESTRATOS conectada al
-						dispositivo, rollback productivo, autenticidad criptográfica o producto bancario
-						terminado.
+						Compatibilidad total de ningún lenguaje, C++ en metal, persistencia ESTRATOS confirmada
+						tras reiniciar, rollback productivo, autenticidad criptográfica o producto bancario terminado.
 					</p>
 				</div>
 			</div>
@@ -1037,12 +1068,12 @@ Put_Line(Total);  <i>-- 39.98</i></code
 						<div class="section-kicker light">
 							<span>层</span> ARQUITECTURA EN DESARROLLO / TIMEBACK
 						</div>
-						<p class="strata-status"><i></i> Lectura en metal · motor de escritura en software</p>
+						<p class="strata-status"><i></i> Lectura en metal · sellado cableado al dispositivo</p>
 					</div>
 					<h3 id="strata-title">ESTRATOS</h3>
 					<p class="strata-lead">
-						BMO-X ya monta y recorre su propio formato en hardware.
-						<strong>La transacción existe; ahora debe llegar al dispositivo real.</strong>
+						BMO-X ya monta, recorre y carga programas desde su propio formato en hardware.
+						<strong>Ahora falta sellar, reiniciar y comprobar la nueva generación en el SSD.</strong>
 					</p>
 				</div>
 
@@ -1073,12 +1104,12 @@ Put_Line(Total);  <i>-- 39.98</i></code
 							Hoy el kernel valida superbloques, la identidad física del volumen, hashes BLAKE3,
 							estratos, nodos, atributos y rutas antes de admitir un BEX desde el SSD.
 						</p>
-						<div class="card-label">EN SOFTWARE / ESCRITURA TRANSACCIONAL</div>
+						<div class="card-label">CABLEADO / ESCRITURA TRANSACCIONAL</div>
 						<p>
 							La máquina de estados ya reserva, escribe, exige una barrera y alterna el superbloque
-							para publicar una raíz nueva sin destruir la anterior. Sus pruebas pasan; todavía no
-							está cableada al dispositivo, por lo que ningún dato real se anuncia como escrito por
-							ESTRATOS.
+							para publicar una raíz nueva sin destruir la anterior. El comando <strong>sellar</strong>
+							ya llega al dispositivo; todavía falta la prueba física completa de ejecutar, reiniciar y
+							verificar que la generación persiste.
 						</p>
 						<div class="strata-transaction">
 							<span><b>01</b> escribir sin sobrescribir</span>
@@ -1183,7 +1214,7 @@ Put_Line(Total);  <i>-- 39.98</i></code
 						</li>
 						<li class="active">
 							<b>05</b><span>Escritura</span><small
-								>motor probado · falta conectar el dispositivo</small
+								>sellar cableado · reinicio físico pendiente</small
 							>
 						</li>
 						<li>
@@ -1196,13 +1227,37 @@ Put_Line(Total);  <i>-- 39.98</i></code
 					<strong>ESTADO HONESTO / AGOSTO 2026</strong>
 					<p>
 						<strong>ESTRATOS v1 ya es un sistema de ficheros legible por BMO-X:</strong> monta desde hardware,
-						contrasta identidad, verifica BLAKE3, recorre rutas y carga BEX de C y COBOL. El motor de
-						escritura transaccional está probado en software, no conectado al disco. Múltiples generaciones
-						operativas, GC, rollback y autenticidad criptográfica todavía no están terminados.
+						contrasta identidad, verifica BLAKE3, recorre rutas y carga BEX de C y COBOL. El sellado
+						transaccional ya está implementado y cableado, pero su persistencia tras reiniciar aún no
+						se presenta como comprobada. GC, rollback y autenticidad criptográfica no están terminados.
 					</p>
-					<span>LECTURA REAL · TRANSACCIÓN PROBADA · DISPOSITIVO PENDIENTE</span>
+					<span>LECTURA REAL · SELLADO CABLEADO · REINICIO PENDIENTE</span>
 				</div>
 			</section>
+
+			<div class="platform-frontier" data-reveal>
+				<header>
+					<span>FRONTERA DE PLATAFORMA / SIN HUMO</span>
+					<h3>Especializado hoy.<br /><i>Ampliable mañana.</i></h3>
+				</header>
+				<article>
+					<small>01 / WEB MODERNA</small>
+					<h4>Google no bloquea BMO-X</h4>
+					<p>
+						Un navegador como Chromium necesita red, TLS, HTTP, multiproceso, fuentes, audio, vídeo,
+						JIT y una pila gráfica mucho mayor. BMO-X todavía no intenta reemplazar esa plataforma:
+						prioriza ejecución nativa auditable y permisos explícitos.
+					</p>
+				</article>
+				<article>
+					<small>02 / GPU</small>
+					<h4>RDNA4 + Vulkan son dirección, no demo</h4>
+					<p>
+						RDNA4 es el hardware objetivo para investigar y Vulkan la API deseada. Aún no existe un
+						driver funcional ni una prueba física: es una frontera de I+D, no una capacidad anunciada.
+					</p>
+				</article>
+			</div>
 
 			<p class="evidence-note">
 				<span>NOTA DE INGENIERÍA</span> Las capturas corresponden a etapas distintas del desarrollo. Los
@@ -1278,15 +1333,24 @@ Put_Line(Total);  <i>-- 39.98</i></code
 
 			<div class="public-proof" data-reveal>
 				<div class="proof-summary">
-					<strong>43</strong>
+					<strong>45</strong>
 					<span>repositorios públicos para inspeccionar</span>
 					<p>
-						No todos tienen la misma madurez. Estos cuatro resumen una práctica constante: entender
+						No todos tienen la misma madurez. Estos proyectos resumen una práctica constante: entender
 						problemas difíciles y convertirlos en sistemas que otras personas pueden abrir y
 						revisar.
 					</p>
 				</div>
 				<div class="proof-repos">
+					<a
+						class="flagship"
+						href="https://github.com/AndreeSalazar/BMO-X"
+						target="_blank"
+						rel="noreferrer"
+						><span>PROYECTO PRINCIPAL · PÚBLICO</span><b>BMO-X</b>
+						<p>Meta-kernel auditable, toolchain AOT y escritorio Ring 3 probados sobre hardware real.</p>
+						<small>RUST · X86-64 · C · ADA · COBOL</small><i>↗</i></a
+					>
 					<a href="https://github.com/AndreeSalazar/ADead-BIB" target="_blank" rel="noreferrer"
 						><span>COMPILADOR</span><b>ADead-BIB</b>
 						<p>Convierte código C en programas ejecutables y mantiene visible cada etapa.</p>
@@ -1318,9 +1382,9 @@ Put_Line(Total);  <i>-- 39.98</i></code
 			<div class="proof-disclosure" data-reveal>
 				<span>QUÉ PUEDE COMPROBAR</span>
 				<p>
-					Los cuatro proyectos enlazados se pueden inspeccionar directamente en GitHub. BMO-X, BEF,
-					BMO C, Ada y COBOL se documentan aquí con pruebas y capturas locales, pero todavía no se
-					presentan como repositorios públicos.
+					BMO-X ya tiene repositorio público: se pueden inspeccionar el meta-kernel, BEF, los
+					frontends de C, Ada y COBOL, su historial y su documentación. Las fotografías de esta página
+					añaden evidencia física; no sustituyen la revisión del código.
 				</p>
 			</div>
 		</section>
