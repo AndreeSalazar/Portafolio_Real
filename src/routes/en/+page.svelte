@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Portfolio from '$lib/Portfolio.svelte';
-	import { es } from '$lib/i18n/es';
+	import { en } from '$lib/i18n/en';
 </script>
 
-<Portfolio copy={es} lang="es" />
+<Portfolio copy={en} lang="en" />
